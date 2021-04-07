@@ -1,5 +1,4 @@
 import arcade
-import math
 
 width = 1000
 height = 800
@@ -15,8 +14,8 @@ def on_draw(dt):
     on_draw.x += on_draw.change_x
     on_draw.y += on_draw.change_y
 
-on_draw.x = 100
-on_draw.y = 100
+on_draw.x = 200
+on_draw.y = 200
 
 on_draw.change_x = 1
 on_draw.change_y = 1
