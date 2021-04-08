@@ -1,25 +1,41 @@
 import arcade
+from random import randint, choice
 
-width = 1000
-height = 800
+width = 800
+height = 600
+balls = []
+class Ball():
+    def __init__(self, x, y, vx, vy, size, color):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.size = size
+        self.color = color
 
+    def update(self):
+
+        if self.x >= width or self.x <= 0:
+            self.vx *= -1
+        if self.y >= height or self.y < 0:
+            self.vy *= -1
+        self.x += self.vx
+        self.y += self.vy
+
+    def draw(self):
+        arcade.draw_circle_filled(self.x, self.y, self.size, self.color)
+        
 
 def on_draw(dt):
     arcade.start_render()
-    if on_draw.x >= 975 or on_draw.x <= 25:
-        on_draw.change_x *= -1
-    if on_draw.y >= 775 or on_draw.y < 25:
-        on_draw.change_y *= -1
-    arcade.draw_circle_filled(on_draw.x, on_draw.y, 25, arcade.color.RED)
-    on_draw.x += on_draw.change_x
-    on_draw.y += on_draw.change_y
 
-on_draw.x = 200
-on_draw.y = 200
+    for b in balls:
+        b.update()
+        b.draw()
 
-on_draw.change_x = 1
-on_draw.change_y = 1
-
+for i in range(1000):
+    b = Ball(randint(0, width), randint(0, height), randint(1, 100), randint(0, 10), randint(0, 10), arcade.color.RED)
+    balls.append(b)
 
 
 arcade.open_window(width, height, "yeet")
