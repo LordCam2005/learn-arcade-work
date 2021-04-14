@@ -1,10 +1,12 @@
 import arcade
 from random import randint, choice
 
-width = 800
-height = 600
+width = 2000
+height = 1000
 balls = []
-class Ball():
+
+
+class Ball:
     def __init__(self, x, y, vx, vy, size, color):
         self.x = x
         self.y = y
@@ -24,7 +26,7 @@ class Ball():
 
     def draw(self):
         arcade.draw_circle_filled(self.x, self.y, self.size, self.color)
-        
+
 
 def on_draw(dt):
     arcade.start_render()
@@ -33,11 +35,19 @@ def on_draw(dt):
         b.update()
         b.draw()
 
+
 for i in range(1000):
-    b = Ball(randint(0, width), randint(0, height), randint(1, 100), randint(0, 10), randint(0, 10), arcade.color.RED)
+    b = Ball(
+        randint(0, width),
+        randint(0, height),
+        randint(1, 100),
+        randint(0, 10),
+        randint(0, 10),
+        arcade.color.RED,
+    )
     balls.append(b)
 
 
 arcade.open_window(width, height, "yeet")
-arcade.schedule(on_draw, 1/60)
+arcade.schedule(on_draw, 1 / 60)
 arcade.run()
