@@ -1,11 +1,12 @@
 import arcade
+import random
 
 SPRITE_SCALING = 0.5
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
-SCREEN_TITLE = "srite with walls"
+SCREEN_TITLE = "sprite with walls"
 MOVEMENT_SPEED = 5
-
+VIEWPOINT_MARGIN = 300
 class MyGame(arcade.Window):
     def __init__(self, height, width, title):
         super().__init__(width, height, title)
@@ -17,28 +18,28 @@ class MyGame(arcade.Window):
         self.player_sprite = None
         self.physics_engine = None
 
+        self.view_left = 0
+        self.view_bottom = 0
+
     def setup(self):
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
-        self.player_sprite = arcade.Sprite("player_action1.png")
+        self.player_sprite = arcade.Sprite("pieceRED_border04.png")
         
 
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
 
-        for x in range(173,650,64):
-            wall = arcade.Sprite("box.png", SPRITE_SCALING)
-            wall.center_x = x
-            wall.center_y = 200
-            self.wall_list.append(wall)
+        for x in range(200, 1650, 210):
+            for y in range(0, 1000, 64):
+                if random.randrange(5) > 0:
+                    wall = arcade.Sprite("box.png", SPRITE_SCALING)
+                    wall.center_x = x
+                    wall.center_y = y
+                    self.wall_list.append(wall)
 
-        for y in range(273, 500, 64):
-            wall = arcade.Sprite("box.png", SPRITE_SCALING)
-            wall.center_y = y
-            wall.center_x = 495
-            self.wall_list.append(wall)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
@@ -68,6 +69,34 @@ class MyGame(arcade.Window):
     
     def on_update(self, delta_time):
         self.physics_engine.update()
+
+        changed = False
+
+        left_boundary = self.view_left + VIEWPOINT_MARGIN
+        if self.player_sprite.left < left_boundary:
+            self.view_left -= left_boundary - self.player_sprite.left
+            changed = True
+
+        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPOINT_MARGIN
+        if self.player_sprite.right > right_boundary:
+            self.view_left += self.player_sprite.right - right_boundary
+            changed = True
+
+        bottom_boundary = self.view_bottom + VIEWPOINT_MARGIN
+        if self.player_sprite.bottom < bottom_boundary:
+            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
+            changed = True
+
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPOINT_MARGIN
+        if self.player_sprite.top > top_boundary:
+            self.view_bottom += self.player_sprite.top - top_boundary
+            changed = True
+
+        self.view_left = int(self.view_left)
+        self.view_bottom = int(self.view_bottom)
+
+        if changed:
+            arcade.set_viewport(self.view_left, SCREEN_WIDTH + self.view_left, self.view_bottom, SCREEN_HEIGHT + self.view_bottom)
 
 def main():
     window = MyGame(SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_TITLE)
